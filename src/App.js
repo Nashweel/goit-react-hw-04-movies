@@ -1,8 +1,11 @@
 import { lazy, Suspense } from "react";
 import { Switch, Route } from "react-router-dom";
+import AppBar from "./components/AppBar";
+import Container from "./components/Container";
+import LoaderSpinner from "./components/Loader";
 
-const HomePage = lazy(() =>
-  import("./components/HomePage" /* webpackChunkName: 'home-page'*/)
+const HomeView = lazy(() =>
+  import("./views/HomeView" /* webpackChunkName: 'home-page'*/)
 );
 
 const MoviesPage = lazy(() =>
@@ -15,16 +18,35 @@ const MovieDetailsPage = lazy(() =>
   )
 );
 
-const Cast = lazy(() =>
-  import("./components/Cast" /* webpackChunkName: 'cast'*/)
-);
-
-const Reviews = lazy(() =>
-  import("./components/Reviews" /* webpackChunkName: 'reviews'*/)
+const NotFoundView = lazy(() =>
+  import("./views/NotFoundView" /* webpackChunkName: "not-found-view-page" */)
 );
 
 function App() {
-  return;
+  return (
+    <Container>
+      <AppBar />
+      <Suspense fallback={<LoaderSpinner />}>
+        <Switch>
+          <Route path="/" exact>
+            <HomeView />
+          </Route>
+
+          <Route path="/movies" exact>
+            <MoviesPage />
+          </Route>
+
+          <Route path="/movies/:movieId">
+            <MovieDetailsPage />
+          </Route>
+
+          <Route>
+            <NotFoundView />
+          </Route>
+        </Switch>
+      </Suspense>
+    </Container>
+  );
 }
 
 export default App;
